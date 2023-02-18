@@ -68,7 +68,7 @@ variable "cloudfront_geo_restriction_locations" {
   }
 }
 
-variable "dist_derictory" {
+variable "dist_directory" {
   type = string
   default = "dist"
   description = "Path to the directory containing static website files"
