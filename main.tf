@@ -89,17 +89,17 @@ resource "aws_s3_object" "object" {
   count        = var.upload_sample_file ? 1 : 0
   bucket       = aws_s3_bucket.s3_bucket.bucket
   key          = "index.html"
-  source       = "${path.module}/index.html"
+  source       = "${var.dist_directory}/index.html"
   content_type = "text/html"
-  etag         = filemd5("${path.module}/index.html")
+  etag         = filemd5("${var.dist_directory}/index.html")
 }
 resource "aws_s3_object" "errorobject" {
   count        = var.upload_sample_file ? 1 : 0
   bucket       = aws_s3_bucket.s3_bucket.bucket
   key          = "error.html"
-  source       = "${path.module}/error.html"
+  source       = "${var.dist_directory}/error.html"
   content_type = "text/html"
-  etag         = filemd5("${path.module}/error.html")
+  etag         = filemd5("${var.dist_directory}/error.html")
 }
 
 data "aws_route53_zone" "domain_name" {

@@ -66,5 +66,10 @@ variable "cloudfront_geo_restriction_locations" {
     error_message = "must be a valid ISO 3166-1-alpha-2 code"
     condition     = length(var.cloudfront_geo_restriction_locations) == 2
   }
+}
 
+variable "dist_derictory" {
+  type = "string"
+  default = "dist"
+  description = "Path to the directory containing static website files"
 }
