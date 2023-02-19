@@ -53,6 +53,7 @@ variable "cloudfront_max_ttl" {
 variable "cloudfront_geo_restriction_restriction_type" {
   default     = "none"
   description = "The method that you want to use to restrict distribution of your content by country: none, whitelist, or blacklist."
+
   validation {
     error_message = "Can only specify either none, whitelist, blacklist"
     condition     = can(regex("^(none|whitelist|blacklist)$", var.cloudfront_geo_restriction_restriction_type))
@@ -62,9 +63,10 @@ variable "cloudfront_geo_restriction_restriction_type" {
 variable "cloudfront_geo_restriction_locations" {
   default     = []
   description = "The ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist)."
+
   validation {
-    error_message = "must be a valid ISO 3166-1-alpha-2 code"
-    condition     = length(var.cloudfront_geo_restriction_locations) == 2
+    error_message = "ISO 3166-1-alpha-2 code must contain at least 2 characters"
+    condition     = alltrue([ for v in var.cloudfront_geo_restriction_locations : length(v) == 2 ])
   }
 }
 

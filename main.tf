@@ -13,6 +13,11 @@ provider "aws" {
   alias  = "aws_cloudfront"
 }
 
+module "template_files" {
+  source = "hashicorp/dir/template"
+  base_dir = var.dist_directory
+}
+
 locals {
   default_certs = var.use_default_domain ? ["default"] : []
   acm_certs     = var.use_default_domain ? [] : ["acm"]
@@ -85,21 +90,14 @@ resource "aws_s3_bucket_versioning" "s3_bucket" {
   }
 }
 
-resource "aws_s3_object" "object" {
-  count        = var.upload_sample_file ? 1 : 0
-  bucket       = aws_s3_bucket.s3_bucket.bucket
-  key          = "index.html"
-  source       = "${var.dist_directory}/index.html"
-  content_type = "text/html"
-  etag         = filemd5("${var.dist_directory}/index.html")
-}
-resource "aws_s3_object" "errorobject" {
-  count        = var.upload_sample_file ? 1 : 0
-  bucket       = aws_s3_bucket.s3_bucket.bucket
-  key          = "error.html"
-  source       = "${var.dist_directory}/error.html"
-  content_type = "text/html"
-  etag         = filemd5("${var.dist_directory}/error.html")
+resource "aws_s3_object" "dist" {
+  for_each     = module.template_files.files
+  bucket       = aws_s3_bucket.s3_bucket.id
+  key          = each.key
+  content_type = each.value.content_type
+  source       = each.value.source_path
+  content      = each.value.content
+  etag         = each.value.digests.md5
 }
 
 data "aws_route53_zone" "domain_name" {
@@ -107,10 +105,6 @@ data "aws_route53_zone" "domain_name" {
   name         = var.hosted_zone
   private_zone = false
 }
-
-
-
-
 
 ### ROUTE53 ###
 
