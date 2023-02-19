@@ -70,7 +70,7 @@ resource "aws_s3_bucket_website_configuration" "s3_bucket" {
   bucket = aws_s3_bucket.s3_bucket.id
 
   index_document {
-    suffix = "index.html"
+    suffix = var.index_page
   }
 
   error_document {
@@ -143,7 +143,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  default_root_object = "index.html"
+  default_root_object = var.index_page
 
   aliases = local.domain_name
 
@@ -204,7 +204,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     error_code            = 403
     response_code         = 200
     error_caching_min_ttl = 0
-    response_page_path    = "/index.html"
+    response_page_path    = "/${var.index_page}"
   }
 
   wait_for_deployment = false

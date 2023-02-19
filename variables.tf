@@ -75,3 +75,9 @@ variable "dist_directory" {
   default = "dist"
   description = "Path to the directory containing static website files"
 }
+
+variable "index_page" {
+  type = string
+  default = "index.html"
+  description = "Index page"
+}
